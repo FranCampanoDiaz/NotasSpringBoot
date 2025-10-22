@@ -66,7 +66,8 @@
             </div>
         </main>
     </div>
-    <button class="fixed bottom-8 right-8 bg-primary text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors">
+    <button id="addNoteBtn"
+            class="fixed bottom-8 right-8 bg-primary text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors">
         <span class="material-symbols-outlined text-3xl">add</span>
     </button>
 </div>
@@ -132,7 +133,7 @@
   </p>
 
     <div class="flex justify-end gap-2 mt-auto pt-2">
-      <button onclick="editNote()" title="Editar" class="bg-primary text-white text-xs px-2 py-1 rounded hover:bg-blue-600 transition-colors duration-200">
+      <button onclick="editNote(${note.id})" title="Editar" class="bg-primary text-white text-xs px-2 py-1 rounded hover:bg-blue-600 transition-colors duration-200">
         <span class="material-symbols-outlined text-base leading-none">edit</span>
       </button>
       <button onclick="deleteNote(${note.id},this)" title="Eliminar" class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600 transition-colors duration-200">
@@ -149,6 +150,82 @@
 
     fetchNotes();
 </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('modal');
+        const addBtn = document.getElementById('addNoteBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const createNoteForm = document.getElementById('createNoteForm');
+
+        addBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            createNoteForm.reset();
+        });
+
+        createNoteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newNote = {
+                title: document.getElementById('noteTitle').value,
+                description: document.getElementById('noteDescription').value,
+                completed: document.getElementById('noteCompleted').checked
+            };
+
+            try {
+                const response = await fetch('/api/notas', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newNote)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al crear la nota');
+                }
+
+                alert('Nota creada correctamente');
+                modal.classList.add('hidden');
+                createNoteForm.reset();
+                fetchNotes(); // Refresca la lista
+            } catch (error) {
+                console.error(error);
+                alert('Error al crear la nota');
+            }
+        });
+    });
+</script>
+
+
+<!-- Modal para crear nueva nota oculto por defecto -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white dark:bg-background-dark rounded-lg p-6 w-96 shadow-lg">
+        <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Crear Nueva Nota</h3>
+        <form id="createNoteForm" class="flex flex-col gap-4">
+            <input type="text" id="noteTitle" placeholder="Título" required
+                   class="p-2 border border-gray-300 rounded"/>
+            <textarea id="noteDescription" placeholder="Descripción" rows="4" required
+                      class="p-2 border border-gray-300 rounded"></textarea>
+            <label class="flex items-center gap-2">
+                <input type="checkbox" id="noteCompleted"/>
+                <span class="text-gray-700 dark:text-gray-300">Completada</span>
+            </label>
+            <div class="flex justify-end gap-2">
+                <button type="button" id="cancelBtn"
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90">Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 </body>
 </html>
