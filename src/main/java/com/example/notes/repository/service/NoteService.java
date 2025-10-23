@@ -2,10 +2,7 @@ package com.example.notes.repository.service;
 
 import com.example.notes.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class NoteService {
         return noteRepository.findById(id).orElse(null);
     }
 
-    public List<Note> buscarByTitle(String title) {
+    public List<Note> searchByTitle(String title) {
         return noteRepository.findByTitleContainingIgnoreCase(title);
     }
 
