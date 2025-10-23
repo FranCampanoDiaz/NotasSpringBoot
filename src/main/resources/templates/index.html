@@ -74,6 +74,7 @@
 
 
 <script>
+    //metodo para traer las notas de la API.
     async function fetchNotes() {
         try {
             const response = await fetch('/api/notas');
@@ -84,6 +85,7 @@
         }
     }
 
+    //metodo para borrar una nota
     async function deleteNote(id, button) {
         if (!confirm("¿Estás seguro que quiere eliminar la nota?")) return;
 
@@ -99,13 +101,38 @@
 
             } else alert("Error al eliminar");
 
-
         } catch (error) {
             console.error(error);
         }
 
     }
 
+    //modificar nota.
+    async function editNote(id) {
+        try {
+            const response = await fetch(`/api/notas/${id}`);
+            const note = await response.json();
+
+            // Rellena el formulario con los datos existentes
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteDescription').value = note.description;
+            document.getElementById('noteCompleted').checked = note.completed;
+
+            // Guarda el ID de la nota que se está editando
+            editingNoteId = id;
+
+            // Cambia el título del modal
+            document.querySelector('#modal h3').textContent = 'Editar Nota';
+
+            // Muestra el modal
+            document.getElementById('modal').classList.remove('hidden');
+        } catch (error) {
+            console.error('Error al cargar la nota:', error);
+            alert('No se pudo cargar la nota para editar.');
+        }
+    }
+
+    //metodo para mostrar las notas visualmente.
     function renderNotes(notes) {
         const container = document.getElementById('notes-container');
         container.innerHTML = '';
@@ -153,6 +180,8 @@
 
 
 <script>
+    //variable para saber si edito o creo.
+    let editingNoteId = null;
     document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('modal');
         const addBtn = document.getElementById('addNoteBtn');
@@ -178,25 +207,38 @@
             };
 
             try {
-                const response = await fetch('/api/notas', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(newNote)
-                });
+                let response;
 
-                if (!response.ok) {
-                    throw new Error('Error al crear la nota');
+                if (editingNoteId) {
+                    // 🔁 Modo edición → PUT
+                    response = await fetch(`/api/notas/${editingNoteId}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(newNote)
+                    });
+                } else {
+                    // 🆕 Modo creación → POST
+                    response = await fetch('/api/notas', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(newNote)
+                    });
                 }
 
-                alert('Nota creada correctamente');
+                if (!response.ok) throw new Error('Error al guardar la nota');
+
+                alert(editingNoteId ? 'Nota actualizada correctamente' : 'Nota creada correctamente');
                 modal.classList.add('hidden');
                 createNoteForm.reset();
+                editingNoteId = null; // 🔁 volvemos a modo creación
+                document.querySelector('#modal h3').textContent = 'Crear Nueva Nota';
                 fetchNotes(); // Refresca la lista
             } catch (error) {
                 console.error(error);
-                alert('Error al crear la nota');
+                alert('Error al guardar la nota');
             }
         });
+
     });
 </script>
 
