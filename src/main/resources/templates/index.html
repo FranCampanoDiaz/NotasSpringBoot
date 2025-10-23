@@ -51,10 +51,13 @@
                         <path d="M16 2H8C4.691 2 2 4.691 2 8v13h2V8c0-2.556 1.913-4.665 4.394-4.943A4.992 4.992 0 0 1 8 3h8c2.206 0 4 1.794 4 4v12c0 1.103-.897 2-2 2H8v-2h8c-1.103 0-2-.897-2-2V7c0-1.103-.897-2-2-2H8c-.566 0-1.093.242-1.465.649A5.023 5.023 0 0 1 5.95 6.05C6.016 6.033 6.082 6.018 6.149 6H8v15H6V8c0-1.103-.897-2-2-2s-2 .897-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8c0-3.309-2.691-6-6-6z"></path>
                     </svg>
                 </div>
-                <h1 class="text-xl font-bold">NoteApp</h1>
+                <span onclick="fetchNotes()" class="text-xl font-bold cursor-pointer">NoteApp</span>
             </div>
             <div class="flex items-center gap-4">
-                <button class="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-slate-600 dark:text-slate-300">
+                <input id="searchInput" type="text" placeholder="Buscar por título..."
+                       class="p-2 border border-gray-300 rounded w-48 text-sm"/>
+                <button onclick="searchNote()"
+                        class="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-slate-600 dark:text-slate-300">
                     <span class="material-symbols-outlined">search</span>
                 </button>
             </div>
@@ -80,6 +83,13 @@
             const response = await fetch('/api/notas');
             const notes = await response.json();
             renderNotes(notes);
+
+            // Limpiar el input de búsqueda cuando cargue todas las notas
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+
         } catch (error) {
             console.error('Error al cargar notas:', error);
         }
@@ -138,7 +148,7 @@
         container.innerHTML = '';
 
         if (notes.length === 0) {
-            container.innerHTML = '<p class="text-gray-500">No hay notas disponibles.</p>';
+            container.innerHTML = '<p class="text-gray-500 ">No hay notas disponibles.</p>';
             return;
         }
 
@@ -174,6 +184,33 @@
             container.appendChild(card);
         });
     }
+
+    //metodo para buscar nota
+    async function searchNote() {
+        const query = document.getElementById('searchInput').value.trim();
+
+        if (query === "") {
+            fetchNotes(); // Si no hay texto, muestra todas las notas
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/notas/search?title=${encodeURIComponent(query)}`);
+            if (!response.ok) throw new Error("Error al buscar notas");
+
+            const notes = await response.json();
+            renderNotes(notes);
+
+            if (notes.length === 0) {
+                alert("No se encontraron notas con ese título");
+            }
+
+        } catch (error) {
+            console.error('Error al buscar notas:', error);
+            alert('Hubo un error al buscar las notas.');
+        }
+    }
+
 
     fetchNotes();
 </script>

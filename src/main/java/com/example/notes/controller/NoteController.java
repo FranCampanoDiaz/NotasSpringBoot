@@ -48,6 +48,14 @@ public class NoteController {
         }
     }
 
+    //Buscar por titulo
+    @GetMapping("/search")
+    public ResponseEntity<List<Note>> buscarByTitle(@RequestParam String title) {
+        List<Note> notas = noteService.buscarByTitle(title);
+        return ResponseEntity.ok(notas);
+    }
+
+
     //actualizar
     @PutMapping("/{id}")
     public ResponseEntity<Note> update(@PathVariable Long id, @RequestBody Note noteActualizada) {
