@@ -1,5 +1,7 @@
 package com.example.notes.repository.service.service;
 
+import com.example.notes.exception.NoteNotFoundException;
+import com.example.notes.exception.NoteNotSaveException;
 import com.example.notes.model.Note;
 import com.example.notes.repository.service.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +19,22 @@ public class NoteService {
     }
 
     public Note save(Note note) {
+        if (note == null) {
+            throw new NoteNotSaveException("Service: Note not saved");
+        }
         return noteRepository.save(note);
     }
 
     public Note findById(Long id) {
-        return noteRepository.findById(id).orElse(null);
+        return noteRepository.findById(id)
+                .orElseThrow(() -> new NoteNotFoundException(id));
     }
 
+
     public List<Note> searchByTitle(String title) {
+        if (title == null) {
+            throw new NoteNotSaveException("Service: Title not found");
+        }
         return noteRepository.findByTitleContainingIgnoreCase(title);
     }
 

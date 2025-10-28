@@ -1,5 +1,8 @@
 package com.example.notes.controller;
 
+import com.example.notes.exception.NoteNotFoundException;
+import com.example.notes.exception.NoteNotSaveException;
+import com.example.notes.exception.NotesEmptyException;
 import com.example.notes.model.Note;
 import com.example.notes.repository.service.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +25,21 @@ public class NoteController {
     //Obtener todas
     @GetMapping
     public ResponseEntity<List<Note>> findAll() {
+        if (noteService.findAll().isEmpty()) {
+            throw new NotesEmptyException("Notas Empty");
+        }
+
         return ResponseEntity.ok(noteService.findAll());
     }
 
     //Guardar
     @PostMapping
     public ResponseEntity<Note> save(@RequestBody Note note) {
-        return ResponseEntity.ok(noteService.save(note));
+        Note savedNote = noteService.save(note);
+        if (savedNote == null) {
+            throw new NoteNotSaveException("Note not saved");
+        }
+        return ResponseEntity.ok(savedNote);
     }
 
     //Borrar
@@ -44,6 +55,7 @@ public class NoteController {
         if (noteService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         } else {
+
             return ResponseEntity.ok(noteService.findById(id));
         }
     }

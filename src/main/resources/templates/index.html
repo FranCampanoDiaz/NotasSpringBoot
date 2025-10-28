@@ -40,6 +40,9 @@
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
+
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display">
 <div class="relative flex h-auto min-h-screen w-full flex-col">
@@ -98,10 +101,16 @@
     //metodo para borrar una nota
     async function deleteNote(id, button) {
         if (!confirm("¿Estás seguro que quiere eliminar la nota?")) return;
+        // Tomar el token CSRF del input oculto
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
         try {
             const response = await fetch(`/api/notas/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
             });
 
             if (response.ok) {
@@ -242,6 +251,8 @@
                 description: document.getElementById('noteDescription').value,
                 completed: document.getElementById('noteCompleted').checked
             };
+            // Tomar el token CSRF del input oculto
+            const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
             try {
                 let response;
@@ -250,14 +261,20 @@
                     // 🔁 Modo edición → PUT
                     response = await fetch(`/api/notas/${editingNoteId}`, {
                         method: 'PUT',
-                        headers: {'Content-Type': 'application/json'},
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken  // ✅ Enviamos el token CSRF
+                        },
                         body: JSON.stringify(newNote)
                     });
                 } else {
                     // 🆕 Modo creación → POST
                     response = await fetch('/api/notas', {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken  // ✅ Enviamos el token CSRF
+                        },
                         body: JSON.stringify(newNote)
                     });
                 }
@@ -297,6 +314,7 @@
                 <button type="button" id="cancelBtn"
                         class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar
                 </button>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <button type="submit"
                         class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90">Guardar
                 </button>
