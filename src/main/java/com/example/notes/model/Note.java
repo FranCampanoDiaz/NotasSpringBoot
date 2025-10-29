@@ -14,6 +14,15 @@ public class Note {
     private String description;
     private boolean completed;
 
+    public Note(String title, String description, boolean completed) {
+        this.title = title;
+        this.description = description;
+        this.completed = completed;
+    }
+
+    public Note() {
+    }
+
     public Long getId() {
         return id;
     }
