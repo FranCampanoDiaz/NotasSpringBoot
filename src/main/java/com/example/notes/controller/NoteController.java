@@ -1,84 +1,52 @@
 package com.example.notes.controller;
 
-import com.example.notes.exception.NoteNotFoundException;
-import com.example.notes.exception.NoteNotSaveException;
-import com.example.notes.exception.NotesEmptyException;
 import com.example.notes.model.Note;
 import com.example.notes.repository.service.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/notas")
 public class NoteController {
-    private NoteService noteService;
+
+    private final NoteService noteService;
 
     @Autowired
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
     }
 
-    //Obtener todas
     @GetMapping
     public ResponseEntity<List<Note>> findAll() {
-        if (noteService.findAll().isEmpty()) {
-            throw new NotesEmptyException("Notas Empty");
-        }
-
         return ResponseEntity.ok(noteService.findAll());
     }
 
-    //Guardar
-    @PostMapping
-    public ResponseEntity<Note> save(@RequestBody Note note) {
-        Note savedNote = noteService.save(note);
-        if (savedNote == null) {
-            throw new NoteNotSaveException("Note not saved");
-        }
-        return ResponseEntity.ok(savedNote);
+    @GetMapping("/{id}")
+    public ResponseEntity<Note> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(noteService.findById(id));
     }
 
-    //Borrar
+    @GetMapping("/search")
+    public ResponseEntity<List<Note>> searchByTitle(@RequestParam String title) {
+        return ResponseEntity.ok(noteService.searchByTitle(title));
+    }
+
+    @PostMapping
+    public ResponseEntity<Note> save(@RequestBody Note note) {
+        return ResponseEntity.ok(noteService.save(note));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Note> update(@PathVariable Long id, @RequestBody Note noteActualizada) {
+        return ResponseEntity.ok(noteService.updateNote(id, noteActualizada));
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Note> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         noteService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-    //Buscar
-    @GetMapping("/{id}")
-    public ResponseEntity<Note> findById(@PathVariable Long id) {
-        if (noteService.findById(id) == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-
-            return ResponseEntity.ok(noteService.findById(id));
-        }
-    }
-
-    //Buscar por titulo
-    @GetMapping("/search")
-    public ResponseEntity<List<Note>> buscarByTitle(@RequestParam String title) {
-        List<Note> notas = noteService.searchByTitle(title);
-        return ResponseEntity.ok(notas);
-    }
-
-
-    //actualizar
-    @PutMapping("/{id}")
-    public ResponseEntity<Note> update(@PathVariable Long id, @RequestBody Note noteActualizada) {
-        Note noteExistente = noteService.findById(id);
-        if (noteExistente == null) {
-            return ResponseEntity.notFound().build();
-        }
-        noteExistente.setTitle(noteActualizada.getTitle());
-        noteExistente.setDescription(noteActualizada.getDescription());
-        noteExistente.setCompleted(noteActualizada.isCompleted());
-        return ResponseEntity.ok(noteService.save(noteExistente));
-    }
-
 }

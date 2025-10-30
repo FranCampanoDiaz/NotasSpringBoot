@@ -2,6 +2,7 @@ package com.example.notes.repository.service.service;
 
 import com.example.notes.exception.NoteNotFoundException;
 import com.example.notes.exception.NoteNotSaveException;
+import com.example.notes.exception.NotesEmptyException;
 import com.example.notes.model.Note;
 import com.example.notes.repository.service.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,39 +12,57 @@ import java.util.List;
 
 @Service
 public class NoteService {
-    private NoteRepository noteRepository;
+
+    private final NoteRepository noteRepository;
 
     @Autowired
     public NoteService(NoteRepository noteRepository) {
         this.noteRepository = noteRepository;
     }
 
+    // Guardar nota
     public Note save(Note note) {
         if (note == null) {
-            throw new NoteNotSaveException("Service: Note not saved");
+            throw new NoteNotSaveException("Note not saved");
         }
         return noteRepository.save(note);
     }
 
+    // Obtener todas las notas
+    public List<Note> findAll() {
+        List<Note> notes = noteRepository.findAll();
+        if (notes.isEmpty()) {
+            throw new NotesEmptyException("No hay notas disponibles");
+        }
+        return notes;
+    }
+
+    // Obtener nota por id
     public Note findById(Long id) {
         return noteRepository.findById(id)
                 .orElseThrow(() -> new NoteNotFoundException(id));
     }
 
-
+    // Buscar notas por título
     public List<Note> searchByTitle(String title) {
-        if (title == null) {
-            throw new NoteNotSaveException("Service: Title not found");
+        if (title == null || title.isEmpty()) {
+            throw new NoteNotSaveException("Título no puede estar vacío");
         }
         return noteRepository.findByTitleContainingIgnoreCase(title);
     }
 
-    public List<Note> findAll() {
-        return noteRepository.findAll();
+    // Actualizar nota
+    public Note updateNote(Long id, Note noteActualizada) {
+        Note noteExistente = findById(id);
+        noteExistente.setTitle(noteActualizada.getTitle());
+        noteExistente.setDescription(noteActualizada.getDescription());
+        noteExistente.setCompleted(noteActualizada.isCompleted());
+        return save(noteExistente);
     }
 
+    // Borrar nota
     public void deleteById(Long id) {
-        noteRepository.deleteById(id);
+        Note note = findById(id);
+        noteRepository.delete(note);
     }
-
 }
