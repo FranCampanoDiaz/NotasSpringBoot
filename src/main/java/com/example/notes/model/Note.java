@@ -1,28 +1,33 @@
 package com.example.notes.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String description;
     private boolean completed;
 
-    public Note(String title, String description, boolean completed) {
+    @ManyToOne(fetch = FetchType.LAZY)  // Muchas notas -> un usuario
+    @JoinColumn(name = "user_id", nullable = false)  // FK en la tabla notes
+    @JsonIgnore // ✅ Evita el error de serialización al devolver la nota
+    private AppUser user;
+
+    public Note() {}
+
+    public Note(String title, String description, boolean completed, AppUser user) {
         this.title = title;
         this.description = description;
         this.completed = completed;
+        this.user = user;
     }
 
-    public Note() {
-    }
-
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -53,5 +58,13 @@ public class Note {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 }

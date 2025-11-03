@@ -250,6 +250,8 @@
         cancelBtn.addEventListener('click', () => {
             modal.classList.add('hidden');
             createNoteForm.reset();
+            editingNoteId = null; // 🔁 vuelve a modo creación
+            document.querySelector('#modal h3').textContent = 'Crear Nueva Nota';
         });
 
         createNoteForm.addEventListener('submit', async (e) => {

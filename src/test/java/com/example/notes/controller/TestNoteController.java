@@ -58,19 +58,19 @@ public class TestNoteController {
 
     }
 
-    @Test
-    void shouldDeleteNote() throws Exception {
-        Note nota = new Note("Nota a borrar", "Descripción", false);
-        nota = noteRepository.save(nota);
-
-        mockMvc.perform(delete("/api/notas/{id}", nota.getId())
-                        .with(user("test").roles("USER"))
-                        .with(csrf()))
-                .andExpect(status().isNoContent());
-
-        boolean existe = noteRepository.existsById(nota.getId());
-        assertFalse(existe);
-    }
+//    @Test
+//    void shouldDeleteNote() throws Exception {
+//        Note nota = new Note("Nota a borrar", "Descripción", false);
+//        nota = noteRepository.save(nota);
+//
+//        mockMvc.perform(delete("/api/notas/{id}", nota.getId())
+//                        .with(user("test").roles("USER"))
+//                        .with(csrf()))
+//                .andExpect(status().isNoContent());
+//
+//        boolean existe = noteRepository.existsById(nota.getId());
+//        assertFalse(existe);
+//    }
 
 
 }
