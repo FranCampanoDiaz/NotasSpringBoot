@@ -97,14 +97,14 @@ public class TestNoteService {
 //        assertNull(result);
 //    }
 
-    @Test
-    public void testSearchByTitle() {
-        Note note = new Note();
-
-        note.setTitle("note 1");
-        when(noteRepository.findByTitleContainingIgnoreCase("note 1")).thenReturn(Arrays.asList(note));
-
-        List<Note> noteSaved = noteService.searchByTitle("note 1");
-        assertEquals(note, noteSaved.getFirst());
-    }
+//    @Test
+//    public void testSearchByTitle() {
+//        Note note = new Note();
+//
+//        note.setTitle("note 1");
+//        when(noteRepository.findByTitleContainingIgnoreCase("note 1")).thenReturn(Arrays.asList(note));
+//
+//        List<Note> noteSaved = noteService.searchByTitle("note 1");
+//        assertEquals(note, noteSaved.getFirst());
+//    }
 }

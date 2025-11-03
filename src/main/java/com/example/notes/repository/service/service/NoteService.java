@@ -75,11 +75,11 @@ public class NoteService {
 
 
     // Buscar notas por título
-    public List<Note> searchByTitle(String title) {
+    public List<Note> searchByTitle(Long userId,String title) {
         if (title == null || title.isEmpty()) {
             throw new NoteNotSaveException("Título no puede estar vacío");
         }
-        return noteRepository.findByTitleContainingIgnoreCase(title);
+        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(userId,title);
     }
 
     // Actualizar nota

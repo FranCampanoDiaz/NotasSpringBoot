@@ -1,5 +1,6 @@
 package com.example.notes.controller;
 
+import com.example.notes.model.AppUser;
 import com.example.notes.model.Note;
 import com.example.notes.repository.service.AppUserRepository;
 import com.example.notes.repository.service.service.NoteService;
@@ -42,8 +43,15 @@ public class NoteController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Note>> searchByTitle(@RequestParam String title) {
-        return ResponseEntity.ok(noteService.searchByTitle(title));
+    public ResponseEntity<List<Note>> searchNotes(
+            @RequestParam("title") String title,
+            Principal principal) {
+
+        AppUser user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<Note> notes = noteService.searchByTitle(user.getId(), title);
+        return ResponseEntity.ok(notes);
     }
 
 //    @PostMapping
