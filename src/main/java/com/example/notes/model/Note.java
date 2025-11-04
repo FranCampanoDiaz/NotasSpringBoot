@@ -15,7 +15,7 @@ public class Note {
 
     @ManyToOne(fetch = FetchType.LAZY)  // Muchas notas -> un usuario
     @JoinColumn(name = "user_id", nullable = false)  // FK en la tabla notes
-    @JsonIgnore // ✅ Evita el error de serialización al devolver la nota
+    @JsonIgnore // Evita el error de serialización al devolver la nota
     private AppUser user;
 
     public Note() {}
