@@ -1,16 +1,14 @@
-package com.example.notes.repository.service.service;
+package com.example.notes.service;
 
 import com.example.notes.exception.NoteNotFoundException;
 import com.example.notes.exception.NoteNotSaveException;
-import com.example.notes.exception.NotesEmptyException;
 import com.example.notes.model.AppUser;
 import com.example.notes.model.Note;
-import com.example.notes.repository.service.AppUserRepository;
-import com.example.notes.repository.service.NoteRepository;
+import com.example.notes.repository.AppUserRepository;
+import com.example.notes.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 
 @Service

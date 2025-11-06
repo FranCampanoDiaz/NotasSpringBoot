@@ -1,14 +1,9 @@
-package com.example.notes.repository.service.service;
+package com.example.notes.service;
 
-import com.example.notes.controller.AuthController;
-import com.example.notes.model.AppUser;
-import com.example.notes.repository.service.AppUserRepository;
+import com.example.notes.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Service
 public class AuthService {

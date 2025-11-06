@@ -1,7 +1,7 @@
-package com.example.notes.repository.service.service;
+package com.example.notes.service;
 
 import com.example.notes.model.AppUser;
-import com.example.notes.repository.service.AppUserRepository;
+import com.example.notes.repository.AppUserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

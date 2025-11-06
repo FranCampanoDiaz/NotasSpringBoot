@@ -2,8 +2,8 @@ package com.example.notes.controller;
 
 import com.example.notes.model.AppUser;
 import com.example.notes.model.Note;
-import com.example.notes.repository.service.AppUserRepository;
-import com.example.notes.repository.service.service.NoteService;
+import com.example.notes.repository.AppUserRepository;
+import com.example.notes.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

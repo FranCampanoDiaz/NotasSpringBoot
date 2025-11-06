@@ -1,7 +1,6 @@
 package com.example.notes.controller;
 
-import com.example.notes.model.Note;
-import com.example.notes.repository.service.NoteRepository;
+import com.example.notes.repository.NoteRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

@@ -1,9 +1,9 @@
-package com.example.notes.repository.service;
+package com.example.notes.repository;
 
 
 import com.example.notes.model.AppUser;
 import com.example.notes.model.Note;
-import com.example.notes.repository.service.service.NoteService;
+import com.example.notes.service.NoteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

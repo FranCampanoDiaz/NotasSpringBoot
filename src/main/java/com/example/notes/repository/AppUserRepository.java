@@ -1,4 +1,4 @@
-package com.example.notes.repository.service;
+package com.example.notes.repository;
 
 import com.example.notes.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;

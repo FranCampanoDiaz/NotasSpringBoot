@@ -2,7 +2,7 @@ package com.example.notes.controller;
 
 
 import com.example.notes.model.AppUser;
-import com.example.notes.repository.service.AppUserRepository;
+import com.example.notes.repository.AppUserRepository;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;

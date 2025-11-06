@@ -117,10 +117,10 @@
     //metodo para borrar una nota
     async function deleteNote(id, button) {
         if (!confirm("¿Estás seguro que quiere eliminar la nota?")) return;
-
+<!-- TODO: Corregir -->
         try {
         await apiFetch(`/api/notas/${id}`, 'DELETE');
-        button.closest('div.bg-white')?.remove();
+        button.closest('div.bg-white' || 'div.bg.green-50')?.remove();
         showToast("Nota eliminada correctamente");
         } catch (error) {
             console.error(error);
